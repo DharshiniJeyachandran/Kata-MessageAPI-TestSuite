@@ -6,9 +6,11 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.module.jsv.JsonSchemaValidator;
 import io.restassured.response.Response;
 import org.junit.Assert;
 
+import java.io.File;
 import java.util.Objects;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -70,6 +72,14 @@ public class MessageApiDefinitions {
     public void the_response_should_contain_messages() {
 
         Assert.assertTrue(Objects.nonNull(response.getBody().asString()));
+
+    }
+
+    @Then("The Response should match the JSON schema")
+    public void the_response_should_match_the_json_shema() {
+
+        File jsonSchemaFile = new File("src/test/resources/schema/messagesSchema.json");
+        response.then().assertThat().body(JsonSchemaValidator.matchesJsonSchema(jsonSchemaFile));
 
     }
 

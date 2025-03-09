@@ -6,6 +6,7 @@ Scenario: Retrieve Messages
   When  The Customer Sends a GET Request
   Then  The Response status code should be 200
   And   The Response should contain messages
+  And   The Response should match the JSON schema
 
 
 
@@ -23,6 +24,7 @@ Scenario: Retrieve Messages
   """
     Then The Response status code should be 201
     And  The Response should contain a valid "messageid"
+
 
   Examples:
     | name       | email                    | phone        | subject         | description                                   |
