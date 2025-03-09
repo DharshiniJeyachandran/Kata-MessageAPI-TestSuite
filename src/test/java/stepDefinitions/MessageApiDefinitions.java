@@ -29,36 +29,34 @@ public class MessageApiDefinitions {
 
     }
 
-
     @When("The Customer Sends a GET Request")
     public void the_customer_sends_a_get_request() {
-
-        response = RestAssured.given().contentType(ContentType.JSON).get(endPointURL);
+        response = RestAssured
+                .given()
+                .contentType(ContentType.JSON)
+                .get(endPointURL);
 
     }
 
     @When("The customer sends a POST request with the following details:")
     public void customer_send_a_post_request_with_the_following_input(String payload) {
-
-
         response = RestAssured
                 .given().
                 contentType(ContentType.JSON).
                 body(payload).
                 when().
                 post(endPointURL);
-
     }
 
     @When("The customer sends a POST request with the invalid details:")
     public void the_customer_sends_a_post_request_with_the_invalid_details(String invalidPayload) {
 
         response = RestAssured
-                .given().
-                contentType(ContentType.JSON).
-                body(invalidPayload).
-                when().
-                post(endPointURL);
+                .given()
+                .contentType(ContentType.JSON)
+                .body(invalidPayload)
+                .when()
+                .post(endPointURL);
     }
 
     @Then("The Response status code should be {int}")
@@ -71,7 +69,9 @@ public class MessageApiDefinitions {
     @Then("The Response should contain messages")
     public void the_response_should_contain_messages() {
 
-        Assert.assertTrue(Objects.nonNull(response.getBody().asString()));
+        String responseBody = response.getBody().asString();
+        Assert.assertNotNull(responseBody);
+        Assert.assertFalse(responseBody.isEmpty());
 
     }
 
@@ -85,7 +85,8 @@ public class MessageApiDefinitions {
 
     @Then("The Response should contain a valid {string}")
     public void the_response_should_contain_a_valid(String messageId){
-        response.then().assertThat()
+        response.then()
+                .assertThat()
                 .body(messageId, notNullValue())
                 .body(messageId, instanceOf(Number.class))
                 .body(messageId, greaterThan(0));
@@ -99,9 +100,6 @@ public class MessageApiDefinitions {
         Assert.assertEquals(expectedErrorMessage, actualErrorMessage);
 
     }
-
-
-
 
 }
 
