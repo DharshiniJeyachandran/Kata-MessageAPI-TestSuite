@@ -9,8 +9,11 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.Assert;
 
-import java.util.Map;
 import java.util.Objects;
+
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.greaterThan;
 
 public class MessageApiDefinitions {
 
@@ -33,16 +36,27 @@ public class MessageApiDefinitions {
     }
 
     @When("The customer sends a POST request with the following details:")
-    public void customer_send_a_post_request_with_the_following_input(io.cucumber.datatable.DataTable dataTable) {
+    public void customer_send_a_post_request_with_the_following_input(String payload) {
 
-        Map<String,String>  requestBody = dataTable.asMaps().get(0);
+
         response = RestAssured
                 .given().
                 contentType(ContentType.JSON).
-                body(requestBody).
+                body(payload).
                 when().
                 post(endPointURL);
 
+    }
+
+    @When("The customer sends a POST request with the invalid details:")
+    public void the_customer_sends_a_post_request_with_the_invalid_details(String invalidPayload) {
+
+        response = RestAssured
+                .given().
+                contentType(ContentType.JSON).
+                body(invalidPayload).
+                when().
+                post(endPointURL);
     }
 
     @Then("The Response status code should be {int}")
@@ -59,6 +73,22 @@ public class MessageApiDefinitions {
 
     }
 
+    @Then("The Response should contain a valid {string}")
+    public void the_response_should_contain_a_valid(String messageId){
+        response.then().assertThat()
+                .body(messageId, notNullValue())
+                .body(messageId, instanceOf(Number.class))
+                .body(messageId, greaterThan(0));
+
+    }
+
+    @Then("The response should contain an error message {string}")
+    public void the_response_should_contain_an_error_message(String expectedErrorMessage) {
+
+        String actualErrorMessage = response.jsonPath().getString("fieldErrors[0]");
+        Assert.assertEquals(expectedErrorMessage, actualErrorMessage);
+
+    }
 
 
 
