@@ -1,6 +1,6 @@
 Feature: Validate Message API Endpoints
 
-
+@GetMessage
 Scenario: Retrieve Messages
   Given The Endpoint "https://automationintesting.online/message/"
   When  The Customer Sends a GET Request
@@ -9,7 +9,7 @@ Scenario: Retrieve Messages
   And   The Response should match the JSON schema
 
 
-
+@PostMessage
   Scenario Outline: Create a message with valid input
     Given The Endpoint "https://automationintesting.online/message/"
     When  The customer sends a POST request with the following details:
@@ -32,8 +32,7 @@ Scenario: Retrieve Messages
     | PraveenRaj | praveenraj@outlook.com   | 329688098991 | Early Checkin   | Enquiry for the early Checkin                 |
 
 
-
-
+@ErrorMessage
   Scenario Outline: Fail to create a message with invalid data
     Given The Endpoint "https://automationintesting.online/message/"
     When  The customer sends a POST request with the invalid details:
